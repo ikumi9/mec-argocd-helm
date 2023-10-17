@@ -1,0 +1,18 @@
+dependencies:
+- name: rabbitmq
+  repository: https://charts.bitnami.com/bitnami
+  version: 11.13.0
+- name: mongodb
+  repository: https://charts.bitnami.com/bitnami
+  version: 13.10.2
+- name: dashboard-service
+  repository: https://tiacloudconsult.github.io/mecdev-helm-chart-repo/charts
+  version: 0.1.0
+- name: api-service
+  repository: https://tiacloudconsult.github.io/mecdev-helm-chart-repo/charts
+  version: 0.1.0
+- name: consumer-service
+  repository: https://tiacloudconsult.github.io/mecdev-helm-chart-repo/charts
+  version: 0.1.0
+digest: sha256:2690a2e506e91dc58e305a56f1200ba60e622ec9cdd52683e949847cda438f7f
+generated: "2023-08-22T13:58:16.796079Z"

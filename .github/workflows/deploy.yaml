@@ -1,0 +1,45 @@
+name: Deploy Helm Chart to ArgoCD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      HELM_CHART_PATH: ./iot-helm
+      NAMESPACE: iot
+      ARGOCD_PROJECT: argocd-test-project
+      ARGOCD_SERVER: my-argocd-server
+      APPLICATION_NAME: my-app
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v1
+
+      # - name: Add ArgoCD Helm repository
+      #   run: helm repo add argo https://argoproj.github.io/argo-helm
+
+      - name: Install Helm Chart
+        run: |
+          helm dependency update $HELM_CHART_PATH
+          helm upgrade --install $APPLICATION_NAME $HELM_CHART_PATH --namespace $NAMESPACE
+
+      - name: Wait for Deployment
+        run: kubectl rollout status deployment/$APPLICATION_NAME -n $NAMESPACE
+
+      - name: Configure ArgoCD
+        run: |
+          argocd app create $APPLICATION_NAME \
+            --project $ARGOCD_PROJECT \
+            --source $HELM_CHART_PATH \
+            --destination server=$ARGOCD_SERVER,namespace=$NAMESPACE \
+            --sync-policy automated
+
+          argocd app sync $APPLICATION_NAME
